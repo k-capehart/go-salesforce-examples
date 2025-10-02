@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/k-capehart/go-salesforce/v2"
+	"github.com/k-capehart/go-salesforce/v3"
 )
 
 func main() {
@@ -25,21 +25,21 @@ func main() {
 	}
 
 	testGetJobResults(sf)
-	// testWithHeader(sf)
-	// testDoRequest(sf)
-	// bulkDmlAssignFile(sf)
-	// bulkDmlAssign(sf)
-	// bulkDmlFile(sf)
-	// bulkDml(sf)
-	// queryBulk(sf)
-	// dmlComposite(sf)
-	// dmlCollections(sf)
-	// dmlSingle(sf)
-	// queryStruct(sf)
-	// query(sf)
-	// functionalConfigExample()
-	// httpConfigExample()
-	// getAccessTokenAndInstanceUrl(sf)
+	testWithHeader(sf)
+	testDoRequest(sf)
+	bulkDmlAssignFile(sf)
+	bulkDmlAssign(sf)
+	bulkDmlFile(sf)
+	bulkDml(sf)
+	queryBulk(sf)
+	dmlComposite(sf)
+	dmlCollections(sf)
+	dmlSingle(sf)
+	queryStruct(sf)
+	query(sf)
+	functionalConfigExample()
+	httpConfigExample()
+	getAccessTokenAndInstanceUrl(sf)
 }
 
 func testGetJobResults(sf *salesforce.Salesforce) {
