@@ -32,8 +32,11 @@ func main() {
 	bulkDmlFile(sf)
 	bulkDml(sf)
 	queryBulk(sf)
+	dmlUpsertComposite(sf)
 	dmlComposite(sf)
+	dmlUpsertCollections(sf)
 	dmlCollections(sf)
+	dmlUpsertSingle(sf)
 	dmlSingle(sf)
 	queryStruct(sf)
 	query(sf)
@@ -278,21 +281,21 @@ func bulkDml(sf *salesforce.Salesforce) {
 	fmt.Println("===== Bulk Upsert")
 
 	type ContactWithExternalId struct {
-		ContactExternalId__c string
-		LastName             string
+		IntegerExtId__c float64
+		LastName        string
 	}
 
 	contactsWithExternalId := []ContactWithExternalId{
 		{
-			ContactExternalId__c: "Avng5",
-			LastName:             "Rhodes",
+			IntegerExtId__c: 12,
+			LastName:        "Rhodes",
 		},
 		{
-			ContactExternalId__c: "Avng6",
-			LastName:             "Quill",
+			IntegerExtId__c: 13,
+			LastName:        "Quill",
 		},
 	}
-	jobIds, err = sf.UpsertBulk("Contact", "ContactExternalId__c", contactsWithExternalId, 1000, false)
+	jobIds, err = sf.UpsertBulk("Contact", "IntegerExtId__c", contactsWithExternalId, 1000, false)
 	if err != nil {
 		panic(err)
 	}
@@ -401,6 +404,54 @@ func queryBulk(sf *salesforce.Salesforce) {
 	}
 }
 
+func dmlUpsertComposite(sf *salesforce.Salesforce) {
+	fmt.Println("===== Upsert Composite String")
+
+	type ContactWithStringExternalId struct {
+		ContactExternalId__c string
+		LastName             string
+	}
+
+	contactsWithStringExternalId := []ContactWithStringExternalId{
+		{
+			ContactExternalId__c: "Avng3",
+			LastName:             "Maximoff",
+		},
+		{
+			ContactExternalId__c: "Avng4",
+			LastName:             "Wilson",
+		},
+	}
+	results, err := sf.UpsertComposite("Contact", "ContactExternalId__c", contactsWithStringExternalId, 200, true)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(results)
+
+	fmt.Println("===== Upsert Composite Int")
+
+	type ContactWithIntExternalId struct {
+		IntegerExtId__c float64
+		LastName        string
+	}
+
+	contactsWithIntExternalId := []ContactWithIntExternalId{
+		{
+			IntegerExtId__c: 375,
+			LastName:        "Maximoff",
+		},
+		{
+			IntegerExtId__c: 912.32,
+			LastName:        "Wilson",
+		},
+	}
+	results, err = sf.UpsertComposite("Contact", "IntegerExtId__c", contactsWithIntExternalId, 200, true)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(results)
+}
+
 func dmlComposite(sf *salesforce.Salesforce) {
 	fmt.Println("===== Insert Composite")
 	type Contact struct {
@@ -444,29 +495,6 @@ func dmlComposite(sf *salesforce.Salesforce) {
 	}
 	fmt.Println(results)
 
-	fmt.Println("===== Upsert Composite")
-
-	type ContactWithExternalId struct {
-		ContactExternalId__c string
-		LastName             string
-	}
-
-	contactsWithExternalId := []ContactWithExternalId{
-		{
-			ContactExternalId__c: "Avng3",
-			LastName:             "Maximoff",
-		},
-		{
-			ContactExternalId__c: "Avng4",
-			LastName:             "Wilson",
-		},
-	}
-	results, err = sf.UpsertComposite("Contact", "ContactExternalId__c", contactsWithExternalId, 200, true)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(results)
-
 	fmt.Println("===== Delete Composite")
 
 	type ContactToDelete struct {
@@ -482,6 +510,54 @@ func dmlComposite(sf *salesforce.Salesforce) {
 		},
 	}
 	results, err = sf.DeleteComposite("Contact", contactsToDelete, 200, true)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(results)
+}
+
+func dmlUpsertCollections(sf *salesforce.Salesforce) {
+	fmt.Println("===== Upsert Collection String")
+
+	type ContactWithStringExternalId struct {
+		ContactExternalId__c string
+		LastName             string
+	}
+
+	contactsWithStringExternalId := []ContactWithStringExternalId{
+		{
+			ContactExternalId__c: "Avng34",
+			LastName:             "Lee",
+		},
+		{
+			ContactExternalId__c: "Avng35",
+			LastName:             "Sam",
+		},
+	}
+	results, err := sf.UpsertCollection("Contact", "ContactExternalId__c", contactsWithStringExternalId, 200)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(results)
+
+	fmt.Println("===== Upsert Collection Int")
+
+	type ContactWithIntExternalId struct {
+		IntegerExtId__c float64
+		LastName        string
+	}
+
+	contactsWithIntExternalId := []ContactWithIntExternalId{
+		{
+			IntegerExtId__c: 987,
+			LastName:        "Storm",
+		},
+		{
+			IntegerExtId__c: 754.3,
+			LastName:        "Richards",
+		},
+	}
+	results, err = sf.UpsertCollection("Contact", "IntegerExtId__c", contactsWithIntExternalId, 200)
 	if err != nil {
 		panic(err)
 	}
@@ -530,29 +606,6 @@ func dmlCollections(sf *salesforce.Salesforce) {
 	}
 	fmt.Println(results)
 
-	fmt.Println("===== Upsert Collection")
-
-	type ContactWithExternalId struct {
-		ContactExternalId__c string
-		LastName             string
-	}
-
-	contactsWithExternalId := []ContactWithExternalId{
-		{
-			ContactExternalId__c: "Avng34",
-			LastName:             "Danvers",
-		},
-		{
-			ContactExternalId__c: "Avng35",
-			LastName:             "Pym",
-		},
-	}
-	results, err = sf.UpsertCollection("Contact", "ContactExternalId__c", contactsWithExternalId, 200)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(results)
-
 	fmt.Println("===== Delete Collection")
 
 	type ContactToDelete struct {
@@ -572,6 +625,39 @@ func dmlCollections(sf *salesforce.Salesforce) {
 		panic(err)
 	}
 	fmt.Println(results)
+}
+
+func dmlUpsertSingle(sf *salesforce.Salesforce) {
+	fmt.Println("===== Upsert One Number")
+
+	type ContactWithIntExternalId struct {
+		IntegerExtId__c float64
+		LastName        string
+	}
+	contactWithIntExternalId := ContactWithIntExternalId{
+		IntegerExtId__c: 0.0,
+		LastName:        "Pym",
+	}
+	result, err := sf.UpsertOne("Contact", "IntegerExtId__c", contactWithIntExternalId)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(result)
+
+	fmt.Println("===== Upsert One String")
+
+	type ContactWithStringExternalId struct {
+		ContactExternalId__c string
+		LastName             string
+	}
+	contactWithStringExternalId := ContactWithStringExternalId{
+		LastName: "Stark",
+	}
+	result, err = sf.UpsertOne("Contact", "ContactExternalId__c", contactWithStringExternalId)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(result)
 }
 
 func dmlSingle(sf *salesforce.Salesforce) {
@@ -604,22 +690,6 @@ func dmlSingle(sf *salesforce.Salesforce) {
 	if err != nil {
 		panic(err)
 	}
-
-	fmt.Println("===== Upsert One")
-
-	type ContactWithExternalId struct {
-		ContactExternalId__c string
-		LastName             string
-	}
-	contactWithExternalId := ContactWithExternalId{
-		ContactExternalId__c: "Avng0",
-		LastName:             "Rogers",
-	}
-	result, err = sf.UpsertOne("Contact", "ContactExternalId__c", contactWithExternalId)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(result)
 
 	fmt.Println("===== Delete One")
 
